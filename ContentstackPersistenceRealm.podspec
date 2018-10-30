@@ -22,8 +22,9 @@ s.social_media_url = 'https://twitter.com/Contentstack'
 s.ios.deployment_target = '8.0'
 s.dependency 'Contentstack', '~> 3.4.0'
 s.dependency 'Realm', '~> 3.11.0'
+s.dependency 'ContentstackPersistence', :git => 'https://github.com/contentstack/contentstack-ios-persistence.git'
 s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
-s.source_files = 'ContentstackPersistence/*.{h,m}','ContentstackPersistenceRealm/*.{h,m}'
-s.public_header_files = 'ContentstackPersistence/*.h','ContentstackPersistenceRealm/*.h'
+s.source_files = 'ContentstackPersistenceRealm/*.{h,m}'
+s.public_header_files = 'ContentstackPersistenceRealm/*.h'
 
 end
