@@ -1,31 +1,28 @@
 [![Contentstack](https://www.contentstack.com/docs/static/images/contentstack.png)](https://www.contentstack.com/)
 
-## iOS SDK for Contentstack Persistence
+# Contentstack iOS Persistence Library
 
-Contentstack is a headless CMS with an API-first approach. It is a CMS that developers can use to build powerful cross-platform applications in their favorite languages. Build your application frontend, and Contentstack will take care of the rest. [Read More](https://www.contentstack.com/).
+Contentstack provides [iOS Persistence Library](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk) that lets your application store data on the device's local storage. This helps you build apps that can work offline too. Given below is a detailed guide and helpful resources to get started with our iOS Persistence Library.
 
-Contentstack provides iOS Persistence SDK to build application on top of iOS. Given below is the detailed guide and helpful resources to get started with our iOS SDK.
+## Prerequisites
 
-The [Persistence Library](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk) lets you store data on the device’s local storage, helping you create apps that can work offline too. Perform the steps given below to use the app.
+- Latest Xcode and Mac OS X
 
-### Prerequisite
+## Setup and Initialize library
 
-Latest Xcode and Mac OS X
+You can use the iOS Persistence Library with CoreData and Realm databases.  Let's understand how to set these up for your project.
 
-### Setup and Installation
+### For CoreData
+To set up this library for CoreData, follow the steps given below.
 
-To use this SDK on iOS platform, you will have to install the SDK according to the steps given below. Current SDK support CoreData and Realm support.
-
-If you are using CoreData as your database to store data following is way to use ContentstackPersistenceCoreData:
-##### CocoaPods
-
+#### Setup using CocoaPods
 1. Add the following line to your Podfile:
 ```
 pod 'ContentstackPersistenceCoreData'
 ```
-2. Run pod install, and you should now have the latest Contentstack release.
+2. Run pod install, and you should now have the latest version of the library.
 
-##### Import Header/Module
+#### Import header/module
 
 ```sh
 #import <ContentstackPersistenceCoreData/ContentstackPersistenceCoreData.h>;
@@ -41,16 +38,16 @@ You can also import as a Module:
 import ContentstackPersistenceCoreData
 ```
 
-#### Initializing your SDK
+#### Initialize the library
 
-To start using the SDK in your application, you will need to initialize the stack by providing the required keys and values associated with them:
+To start using the library in your application, you will need to initialize it by providing your stack details:
 ```sh
 //Objc
 Config *config = [[Config alloc] init];
 config.host = @"customcontentstack.io";
 Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
-CoreDataStore *realmStore = [[CoreDataStore alloc] initWithContenxt: <NSManageObjectContext>];
-SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:realmStore]
+CoreDataStore *coreDataStore = [[CoreDataStore alloc] initWithContenxt: <NSManageObjectContext>];
+SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:coreDataStore]
 [syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
 
 }];
@@ -60,23 +57,25 @@ SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:
 let config = Config()
 config.host = @"customcontentstack.io";
 let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
-var coreDataStore = coreDataStore(realm: <NSManageObjectContext>)
+var coreDataStore = CoreDataStore(contenxt: <NSManageObjectContext>)
 var syncManager : SyncManager = SyncManager(stack: stack, persistance: coreDataStore)
 syncManager.sync({ (percentage, isSynccompleted, error) in
 
 })
 ```
 
-If you are using Realm as your database to store data following is way to use ContentstackPersistenceRealm:
-##### CocoaPods
+### For Realm
+To set up this library for CoreData, follow the steps given below.
+
+#### Setup using CocoaPods
 
 1. Add the following line to your Podfile:
 ```
 pod 'ContentstackPersistenceRealm'
 ```
-2. Run pod install, and you should now have the latest Contentstack release.
+2. Run pod install, and you should now have the latest version of the library.
 
-##### Import Header/Module
+##### Import header/module
 You can import header file in Objective-C project as:
 ```sh
 #import <ContentstackPersistenceRealm/ContentstackPersistenceRealm.h>;
@@ -92,16 +91,16 @@ You can also import as a Module:
 import ContentstackPersistenceRealm
 ```
 
-#### Initializing your SDK
+#### Initialize the library
 
-To start using the SDK in your application, you will need to initialize the stack by providing the required keys and values associated with them:
+To start using the library in your application, you will need to initialize it by providing the stack details:
 ```sh
 //Objc
 Config *config = [[Config alloc] init];
 config.host = @"customcontentstack.io";
 Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
-RealmStore *realm = [[RealmStore alloc] initWithRealm:[[RLMRealm alloc] init]];
-SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:realm]
+RealmStore *realmStore = [[RealmStore alloc] initWithRealm:[[RLMRealm alloc] init]];
+SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:realmStore]
 [syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
 
 }];
@@ -117,10 +116,11 @@ syncManager.sync({ (percentage, isSynccompleted, error) in
 
 })
 ```
+We have created an example app using iOS Persistence Library that stores data on the device's local storage. [Read the tutorial](https://github.com/contentstack/contentstack-ios-persistence-example) to get started with the example app.
 
 ### Helpful Links
 
-- [Contentstack Website](https://www.contentstack.com)
-- [Official Documentation](http://contentstack.com/docs)
+- [iOS Persistence Library Docs](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk)
+- [iOS Persistence Example App]((https://github.com/contentstack/contentstack-ios-persistence-example))
 - [Content Delivery API Docs](https://contentstack.com/docs/apis/content-delivery-api/)
 
