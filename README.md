@@ -121,6 +121,6 @@ We have created an example app using iOS Persistence Library that stores data on
 ### Helpful Links
 
 - [iOS Persistence Library Docs](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk)
-- [iOS Persistence Example App]((https://github.com/contentstack/contentstack-ios-persistence-example))
+- [iOS Persistence Example App](https://github.com/contentstack/contentstack-ios-persistence-example)
 - [Content Delivery API Docs](https://contentstack.com/docs/apis/content-delivery-api/)
 
