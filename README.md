@@ -75,7 +75,7 @@ pod 'ContentstackPersistenceRealm'
 ```
 2. Run pod install, and you should now have the latest version of the library.
 
-##### Import header/module
+#### Import header/module
 You can import header file in Objective-C project as:
 ```sh
 #import <ContentstackPersistenceRealm/ContentstackPersistenceRealm.h>;
