@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 s.name             = 'ContentstackPersistenceCoreData'
 s.version          = '0.0.1'
-s.summary          = 'iOS persistence library to save app data on device's local storage.'
+s.summary          = 'iOS persistence library to save app data on devices local storage.'
 s.license = {
 :type => 'MIT',
 :file => 'LICENSE'
