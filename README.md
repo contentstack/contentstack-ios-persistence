@@ -65,7 +65,7 @@ syncManager.sync({ (percentage, isSynccompleted, error) in
 ```
 
 ### For Realm
-To set up this library for CoreData, follow the steps given below.
+To set up this library for Realm, follow the steps given below.
 
 #### Setup using CocoaPods
 
