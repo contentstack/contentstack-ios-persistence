@@ -100,7 +100,8 @@
     RLMProperty *property = [relationshipName valueForKey:key];
     Class classsName = NSClassFromString(property.objectClassName);
     if (classsName == nil) {
-        NSString * nameSpace = [[[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleExecutable"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"];
+        NSString * nameSpace = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleExecutable"];
+        nameSpace = [[nameSpace componentsSeparatedByCharactersInSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]] componentsJoinedByString:@"_"];
         classsName = NSClassFromString([NSString stringWithFormat:@"%@.%@",nameSpace, property.objectClassName]);
     }
     return classsName;
