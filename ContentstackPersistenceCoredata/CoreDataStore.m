@@ -78,7 +78,7 @@
     NSEntityDescription * desc = [relationDescription destinationEntity];
     Class classsName = NSClassFromString(desc.name);
     if (classsName == nil) {
-        NSString * nameSpace = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleExecutable"];
+        NSString * nameSpace = [[[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleExecutable"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"];
         classsName = NSClassFromString([NSString stringWithFormat:@"%@.%@",nameSpace, desc.name]);
     }
     return classsName;
