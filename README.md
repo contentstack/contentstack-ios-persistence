@@ -96,7 +96,6 @@ You can also import as a Module:
 To start using the library in your application, you will need to initialize it by providing the stack details:
 - Objective- C
   ```sh
-  //Objc
   Config *config = [[Config alloc] init];
   config.host = @"customcontentstack.io";
   Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
