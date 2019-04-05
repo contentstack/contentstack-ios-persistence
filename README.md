@@ -26,43 +26,43 @@ pod 'ContentstackPersistenceCoreData'
 
 ```sh
 #import <ContentstackPersistenceCoreData/ContentstackPersistenceCoreData.h>;
-
+```
 You can also import as a Module:
 
-//Objc
-
-@import ContentstackPersistenceCoreData
-
-//Swift
-
-import ContentstackPersistenceCoreData
-```
+- Objective-C
+    ```
+    @import ContentstackPersistenceCoreData
+    ```
+- Swift
+    ```
+    import ContentstackPersistenceCoreData
+    ```
 
 #### Initialize the library
 
 To start using the library in your application, you will need to initialize it by providing your stack details:
-```sh
-//Objc
-Config *config = [[Config alloc] init];
-config.host = @"customcontentstack.io";
-Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
-CoreDataStore *coreDataStore = [[CoreDataStore alloc] initWithContenxt: <NSManageObjectContext>];
-SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:coreDataStore]
-[syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
+- Objective-C
+    ```sh
+    Config *config = [[Config alloc] init];
+    config.host = @"customcontentstack.io";
+    Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
+    CoreDataStore *coreDataStore = [[CoreDataStore alloc] initWithContenxt: <NSManageObjectContext>];
+    SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:coreDataStore]
+    [syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
 
-}];
+    }];
 
-//Swift
+- Swift
+  ```
+  let config = Config()
+  config.host = @"customcontentstack.io";
+  let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
+  var coreDataStore = CoreDataStore(contenxt: <NSManageObjectContext>)
+  var syncManager : SyncManager = SyncManager(stack: stack, persistance: coreDataStore)
+  syncManager.sync({ (percentage, isSynccompleted, error) in
 
-let config = Config()
-config.host = @"customcontentstack.io";
-let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
-var coreDataStore = CoreDataStore(contenxt: <NSManageObjectContext>)
-var syncManager : SyncManager = SyncManager(stack: stack, persistance: coreDataStore)
-syncManager.sync({ (percentage, isSynccompleted, error) in
-
-})
-```
+  })
+  ```
 
 ### For Realm
 To set up this library for Realm, follow the steps given below.
@@ -79,43 +79,42 @@ pod 'ContentstackPersistenceRealm'
 You can import header file in Objective-C project as:
 ```sh
 #import <ContentstackPersistenceRealm/ContentstackPersistenceRealm.h>;
-
-You can also import as a Module:
-
-//Objc
-
-@import ContentstackPersistenceRealm
-
-//Swift
-
-import ContentstackPersistenceRealm
 ```
+You can also import as a Module:
+- Objective-C
+  ```
+  @import ContentstackPersistenceRealm
+  ```
+- Swift
+  ```
+  import ContentstackPersistenceRealm
+  ```
 
 #### Initialize the library
 
 To start using the library in your application, you will need to initialize it by providing the stack details:
-```sh
-//Objc
-Config *config = [[Config alloc] init];
-config.host = @"customcontentstack.io";
-Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
-RealmStore *realmStore = [[RealmStore alloc] initWithRealm:[[RLMRealm alloc] init]];
-SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:realmStore]
-[syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
+- Objective- C
+  ```sh
+  Config *config = [[Config alloc] init];
+  config.host = @"customcontentstack.io";
+  Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
+  RealmStore *realmStore = [[RealmStore alloc] initWithRealm:[[RLMRealm alloc] init]];
+  SyncManager *syncManager = [[SyncManager alloc] initWithStack:stack persistance:realmStore]
+  [syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
 
-}];
+  }];
+  ```
+- Swift
+  ```
+  let config = Config()
+  config.host = @"customcontentstack.io";
+  let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
+  var realmStore = RealmStore(realm: RLMRealm())
+  var syncManager : SyncManager = SyncManager(stack: stack, persistance: realmStore)
+  syncManager.sync({ (percentage, isSynccompleted, error) in
 
-//Swift
-
-let config = Config()
-config.host = @"customcontentstack.io";
-let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
-var realmStore = RealmStore(realm: RLMRealm())
-var syncManager : SyncManager = SyncManager(stack: stack, persistance: realmStore)
-syncManager.sync({ (percentage, isSynccompleted, error) in
-
-})
-```
+  })
+  ```
 We have created an example app using iOS Persistence Library that stores data on the device's local storage. [Read the tutorial](https://github.com/contentstack/contentstack-ios-persistence-example) to get started with the example app.
 
 ### Helpful Links
