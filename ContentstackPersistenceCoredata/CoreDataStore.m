@@ -12,7 +12,7 @@
 @property (nonatomic, copy) NSManagedObjectContext *context;
 @end
 @implementation CoreDataStore
--(instancetype)initWithContenxt:(NSManagedObjectContext *)context {
+-(instancetype)initWithContext:(NSManagedObjectContext *)context {
     self = [super init];
     if (self) {
         _context = context;
@@ -79,10 +79,29 @@
     Class classsName = NSClassFromString(desc.name);
     if (classsName == nil) {
         NSString * nameSpace = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleExecutable"];
-        nameSpace = [[nameSpace componentsSeparatedByCharactersInSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]] componentsJoinedByString:@"_"];
         classsName = NSClassFromString([NSString stringWithFormat:@"%@.%@",nameSpace, desc.name]);
     }
     return classsName;
+}
+
+-(void)performBlock:(void (^)(void))block {
+    if (_context.concurrencyType == NSConfinementConcurrencyType) {
+        block();
+    }else {
+        [_context performBlock:^{
+            block();
+        }];
+    }
+}
+
+-(void)performBlockAndWait:(void (^)(void))block {
+    if (_context.concurrencyType == NSConfinementConcurrencyType) {
+        block();
+    }else {
+        [_context performBlockAndWait:^{
+            block();
+        }];
+    }
 }
 
 @end

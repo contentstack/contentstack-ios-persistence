@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'ContentstackPersistenceRealm'
-s.version          = '0.0.1'
+s.version          = '0.0.2'
 s.summary          = 'iOS persistence library to save app data on device local storage.'
 
 s.license = {
@@ -16,13 +16,13 @@ DESC
 s.homepage         = 'https://www.contentstack.com/'
 s.license          = { :type => 'Commercial',:text => 'See https://www.contentstack.com/'}
 s.author           = { 'Contentstack' => 'support@contentstack.io' }
-s.source           = { :git => 'https://github.com/contentstack/contentstack-ios-persistence.git', :tag => 'v0.0.1' }
+s.source           = { :git => 'https://github.com/contentstack/contentstack-ios-persistence.git', :tag => 'v0.0.2' }
 s.social_media_url = 'https://twitter.com/Contentstack'
 
 s.ios.deployment_target = '8.0'
 s.dependency 'Contentstack', '~> 3.4.0'
-s.dependency 'ContentstackPersistence', '~> 0.0.1'
-s.dependency 'Realm', '~> 3.11.0'
+s.dependency 'ContentstackPersistence', '~> 0.0.2'
+s.dependency 'Realm', '~> 3.14.0'
 s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
 s.source_files = 'ContentstackPersistenceRealm/*.{h,m}'
 s.public_header_files = 'ContentstackPersistenceRealm/*.h'

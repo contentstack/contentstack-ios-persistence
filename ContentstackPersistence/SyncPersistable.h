@@ -18,16 +18,6 @@
  */
 -(void)save;
 
-/**
- Performs the begin write Transaction to the persistence store.
- */
--(void)beginWriteTransaction;
-
-/**
- Performs the commit write Transaction to the persistence store.
- */
--(void)commitWriteTransaction;
-
 @required
 /**
  Provide super class like 'NSManageObject' for core data.
@@ -99,10 +89,20 @@ Check if property is date type.
 /**
  check if relationship is one-to-one or one-to-many.
 
-
  @param relationshipName Relationship Dictioary.
  @param key String name of field.
  @return true if one-to-many relationshio else return false.
  */
 -(BOOL)isToManyRelationfor:(NSDictionary*)relationshipName forKey:(NSString*)key;
+
+/**
+ Performs the Block Operation to write into the persistence store.
+ */
+-(void)performBlock:(void (^)(void))block;
+
+/**
+ Performs the Block Operation and Wait to write into the persistence store.
+ */
+-(void)performBlockAndWait:(void (^)(void))block;
+
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SyncPersistable.h"
+#import <ContentstackPersistence/SyncPersistable.h>
 #import <Realm/Realm.h>
 @interface RealmStore : NSObject <PersistanceDelegate>
 /**

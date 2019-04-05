@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SyncPersistable.h"
+#import <ContentstackPersistence/SyncPersistable.h>
 #import <CoreData/CoreData.h>
 
 @interface CoreDataStore : NSObject <PersistanceDelegate>
@@ -23,6 +23,6 @@
  @param context instance of NSManageObjecContext
  @return new Instance of CoreDataStore
  */
--(instancetype) initWithContenxt:(NSManagedObjectContext*) context;
+-(instancetype) initWithContext:(NSManagedObjectContext*) context;
 
 @end

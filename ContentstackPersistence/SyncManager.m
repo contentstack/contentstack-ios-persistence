@@ -42,8 +42,6 @@
         NSArray *assets = classConformsProtocol(@protocol(AssetProtocol), superClass);
         if (assets.count > 0) {
             _asset = assets.firstObject;
-        }else {
-            @throw [NSException exceptionWithName:@"AssetProtocol should be define." reason:nil userInfo:nil];
         }
         NSArray *stack = classConformsProtocol(@protocol(SyncStoreProtocol), superClass);
         
@@ -62,42 +60,43 @@
     return [formatter dateFromString:dateString];
 }
 
--(id<SyncStoreProtocol>)getToken {
-    if ([self.persistanceDelegate respondsToSelector:@selector(beginWriteTransaction)]) {
-        [self.persistanceDelegate beginWriteTransaction];
-    }
-    id<SyncStoreProtocol> syncStack = [self findOrCreate:_syncStack predicate:nil];
-    if ([self.persistanceDelegate respondsToSelector:@selector(commitWriteTransaction)]) {
-        [self.persistanceDelegate commitWriteTransaction];
-    }
-    return syncStack;
+-(NSString*) getPaginationToken {
+    __block NSString *paginationToken ;
+    [self.persistanceDelegate performBlockAndWait:^{
+        id<SyncStoreProtocol> syncStack  = [self findOrCreate:self->_syncStack predicate:nil];
+        paginationToken = syncStack.paginationToken;
+    }];
+    return paginationToken;
+}
+
+-(NSString*) getSyncToken {
+    __block NSString* syncToken ;
+    [self.persistanceDelegate performBlockAndWait:^{
+        id<SyncStoreProtocol> syncStack = [self findOrCreate:self->_syncStack predicate:nil];
+        syncToken = syncStack.syncToken;
+    }];
+    return syncToken;
 }
 
 -(void)updateSyncStack:(SyncStack*)syncStack {
-    if ([self.persistanceDelegate respondsToSelector:@selector(beginWriteTransaction)]) {
-        [self.persistanceDelegate beginWriteTransaction];
-    }
     id<SyncStoreProtocol> syncStore = (id<SyncStoreProtocol>)[self findOrCreate:_syncStack predicate:nil];
     syncStore.syncToken = syncStack.syncToken;
     syncStore.paginationToken = syncStack.paginationToken;
-    if ([self.persistanceDelegate respondsToSelector:@selector(commitWriteTransaction)]) {
-        [self.persistanceDelegate commitWriteTransaction];
-    }
 }
 
 -(void)sync:(void (^)(double, BOOL, NSError * _Nullable))completion {
     
-    id<SyncStoreProtocol> syncStore = [self getToken];
+    NSString *paginationToken = [self getPaginationToken];
+    NSString *syncToken = [self getSyncToken];
+    
     id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error != nil) {
-                //Error Message
-                completion(self.percentageComplete, false, error);
-            }else {
-                BOOL isSyncCompleted = false;
-                if ([self.persistanceDelegate respondsToSelector:@selector(beginWriteTransaction)]) {
-                    [self.persistanceDelegate beginWriteTransaction];
-                }
+        if (error != nil) {
+            //Error Message
+            completion(self.percentageComplete, false, error);
+        } else {
+            __block BOOL isSyncCompleted = false;
+            [self.persistanceDelegate performBlockAndWait:^{
+                
                 if (syncStack.items) {
                     self.percentageComplete = ((double)(syncStack.skip) + (double)syncStack.items.count) / (double)syncStack.totalCount;
                 }
@@ -107,8 +106,10 @@
                 [self deleteEntries:deletedEntryArray];
                 
                 //asset_unpublished || asset_deleted
-                NSArray *deletedAssetsArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'asset_unpublished' || type = 'asset_deleted'"]];
-                [self.persistanceDelegate delete:_asset inUid:[deletedAssetsArray valueForKeyPath:@"data.uid"]];
+                if (self->_asset != nil) {
+                    NSArray *deletedAssetsArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'asset_unpublished' || type = 'asset_deleted'"]];
+                    [self.persistanceDelegate delete:self->_asset inUid:[deletedAssetsArray valueForKeyPath:@"data.uid"]];
+                }
                 
                 //asset_published
                 NSArray *publishAssetArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'asset_published'"]];
@@ -118,27 +119,24 @@
                 NSArray *publishEntryArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'entry_published'"]];
                 [self createEntries:publishEntryArray];
                 
-                if ([self.persistanceDelegate respondsToSelector:@selector(commitWriteTransaction)]) {
-                    [self.persistanceDelegate commitWriteTransaction];
-                }
                 //Sync toke Update
                 if (syncStack.syncToken != nil) {
                     isSyncCompleted = true;
                     [self updateSyncStack:syncStack];
                 }
-                
                 //Save context
                 if ([self.persistanceDelegate respondsToSelector:@selector(save)]) {
                     [self.persistanceDelegate save];
                 }
-                completion(self.percentageComplete, isSyncCompleted, error);
-            }
-        });
+            }];
+            completion(self.percentageComplete, isSyncCompleted, error);
+        }
+        
     };
-    if (syncStore.paginationToken != nil) {
-        [_stack syncPaginationToken:syncStore.paginationToken completion:completionBlock];
-    }else if (syncStore.syncToken != nil) {
-        [_stack syncToken:syncStore.syncToken completion:completionBlock];
+    if (paginationToken != nil) {
+        [_stack syncPaginationToken:paginationToken completion:completionBlock];
+    }else if (syncToken != nil) {
+        [_stack syncToken:syncToken completion:completionBlock];
     }else {
         self.percentageComplete = 0;
         [_stack sync:completionBlock];
@@ -177,27 +175,30 @@
 }
 
 -(id)createAssetWithUID:(NSString *)uid withDictionary:(NSDictionary*)dictionary {
-    id<AssetProtocol> asset = (id<AssetProtocol>)[self findOrCreate:_asset predicate:[NSPredicate predicateWithFormat:@"uid = %@", uid]];
-    asset.uid = uid;
-    if ([dictionary valueForKey:@"title"] != nil) {
-        asset.title = [dictionary valueForKey:@"title"];
+    if (_asset != nil) {
+        id<AssetProtocol> asset = (id<AssetProtocol>)[self findOrCreate:_asset predicate:[NSPredicate predicateWithFormat:@"uid = %@", uid]];
+        asset.uid = uid;
+        if ([dictionary valueForKey:@"title"] != nil) {
+            asset.title = [dictionary valueForKey:@"title"];
+        }
+        if ([dictionary valueForKey:@"url"] != nil) {
+            asset.url = [dictionary valueForKey:@"url"];
+        }
+        if ([dictionary valueForKeyPath:@"publish_details.locale"] != nil) {
+            asset.publishLocale = [dictionary valueForKeyPath:@"publish_details.locale"];
+        }
+        if ([dictionary valueForKey:@"filename"] != nil) {
+            asset.fileName = [dictionary valueForKey:@"filename"];
+        }
+        if ([dictionary valueForKey:@"updated_at"] != nil) {
+            asset.updatedAt = [self getDateFrom:[dictionary valueForKey:@"updated_at"]];
+        }
+        if ([dictionary valueForKey:@"created_at"] != nil) {
+            asset.createdAt = [self getDateFrom:[dictionary valueForKey:@"created_at"]];
+        }
+        return asset;
     }
-    if ([dictionary valueForKey:@"url"] != nil) {
-        asset.url = [dictionary valueForKey:@"url"];
-    }
-    if ([dictionary valueForKeyPath:@"publish_details.locale"] != nil) {
-        asset.publishLocale = [dictionary valueForKeyPath:@"publish_details.locale"];
-    }
-    if ([dictionary valueForKey:@"filename"] != nil) {
-        asset.fileName = [dictionary valueForKey:@"filename"];
-    }
-    if ([dictionary valueForKey:@"updated_at"] != nil) {
-        asset.updatedAt = [self getDateFrom:[dictionary valueForKey:@"updated_at"]];
-    }
-    if ([dictionary valueForKey:@"created_at"] != nil) {
-        asset.createdAt = [self getDateFrom:[dictionary valueForKey:@"created_at"]];
-    }
-    return asset;
+    return nil;
 }
 
 -(id)createEntry:(Class)class forUID:(NSString*)uid withDictionary:(NSDictionary*)dictionary {

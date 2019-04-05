@@ -39,11 +39,15 @@
     return false;
 }
 
--(void)beginWriteTransaction {
+- (void)performBlockAndWait:(void (^)(void))block {
     [_realm beginWriteTransaction];
+    block();
+    [_realm commitWriteTransaction];
 }
 
--(void)commitWriteTransaction {
+- (void)performBlock:(void (^)(void))block {
+    [_realm beginWriteTransaction];
+    block();
     [_realm commitWriteTransaction];
 }
 
