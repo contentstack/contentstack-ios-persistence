@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'ContentstackPersistenceCoreData'
-s.version          = '0.0.2'
+s.version          = '0.0.3'
 s.summary          = 'iOS persistence library to save app data on devices local storage.'
 s.license = {
 :type => 'MIT',
@@ -14,12 +14,12 @@ DESC
 s.homepage         = 'https://www.contentstack.com/'
 s.license          = { :type => 'Commercial',:text => 'See https://www.contentstack.com/'}
 s.author           = { 'Contentstack' => 'support@contentstack.io' }
-s.source           = { :git => 'https://github.com/contentstack/contentstack-ios-persistence.git', :tag => 'v0.0.2' }
+s.source           = { :git => 'https://github.com/contentstack/contentstack-ios-persistence.git', :tag => 'v0.0.3' }
 s.social_media_url = 'https://twitter.com/Contentstack'
 
 s.ios.deployment_target = '8.0'
-s.dependency 'Contentstack', '~> 3.4.0'
-s.dependency 'ContentstackPersistence', '~> 0.0.2'
+s.dependency 'Contentstack', '~> 3.5.0'
+s.dependency 'ContentstackPersistence', '~> 0.0.3'
 s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
 s.source_files = 'ContentstackPersistenceCoreData/*.{h,m}'
 s.public_header_files = 'ContentstackPersistenceCoreData/*.h'

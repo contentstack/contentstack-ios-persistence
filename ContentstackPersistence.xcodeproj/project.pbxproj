@@ -36,6 +36,9 @@
 /* Begin PBXFileReference section */
 		00353339123BB4319463FE7F /* Pods-ContentstackPersistence.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistence.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistence/Pods-ContentstackPersistence.debug.xcconfig"; sourceTree = "<group>"; };
 		0181A1F1F3118F9E9E07F420 /* libPods-ContentstackPersistenceTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ContentstackPersistenceTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FA9B008226512F3003AAE25 /* ContentstackPersistence.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ContentstackPersistence.podspec; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		0FA9B00922651300003AAE25 /* ContentstackPersistenceCoreData.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ContentstackPersistenceCoreData.podspec; sourceTree = SOURCE_ROOT; };
+		0FA9B00A22651307003AAE25 /* ContentstackPersistenceRealm.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ContentstackPersistenceRealm.podspec; sourceTree = SOURCE_ROOT; };
 		18AA084F9E0C06DDAB20E086 /* Pods-ContentstackPersistenceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistenceTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistenceTests/Pods-ContentstackPersistenceTests.release.xcconfig"; sourceTree = "<group>"; };
 		2C54B17E607841EF4F9652D3 /* Pods-ContentstackPersistence.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistence.release.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistence/Pods-ContentstackPersistence.release.xcconfig"; sourceTree = "<group>"; };
 		554203F0D46030984D06105D /* libPods-ContentstackPersistence.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ContentstackPersistence.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,6 +131,7 @@
 		FA629A622186C80E00440BA5 /* ContentstackPersistence */ = {
 			isa = PBXGroup;
 			children = (
+				0FA9B008226512F3003AAE25 /* ContentstackPersistence.podspec */,
 				FA629A7E2186C88600440BA5 /* SyncManager.h */,
 				FA629A7F2186C88600440BA5 /* SyncManager.m */,
 				FA629A7C2186C88600440BA5 /* SyncPersistable.h */,
@@ -150,6 +154,7 @@
 		FA629A7A2186C83B00440BA5 /* ContentstackPersistenceRealm */ = {
 			isa = PBXGroup;
 			children = (
+				0FA9B00A22651307003AAE25 /* ContentstackPersistenceRealm.podspec */,
 				FA629A892186C8BC00440BA5 /* RealmStore.h */,
 				FA629A882186C8BC00440BA5 /* RealmStore.m */,
 			);
@@ -159,6 +164,7 @@
 		FA629A7B2186C84800440BA5 /* ContentstackPersistenceCoredata */ = {
 			isa = PBXGroup;
 			children = (
+				0FA9B00922651300003AAE25 /* ContentstackPersistenceCoreData.podspec */,
 				FA629A852186C8B000440BA5 /* CoreDataStore.h */,
 				FA629A842186C8AF00440BA5 /* CoreDataStore.m */,
 			);

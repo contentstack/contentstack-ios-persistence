@@ -1,4 +1,10 @@
 ## Changelog
+### Version 0.0.3 (2019-04-16) ###
+
+#### Changes
+
+ - Dependency update for Contentstack framework
+
 ### Version 0.0.2 (2019-04-05) ###
 
 #### Fixed
