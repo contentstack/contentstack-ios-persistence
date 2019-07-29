@@ -85,23 +85,15 @@
 }
 
 -(void)performBlock:(void (^)(void))block {
-    if (_context.concurrencyType == NSConfinementConcurrencyType) {
+    [_context performBlock:^{
         block();
-    }else {
-        [_context performBlock:^{
-            block();
-        }];
-    }
+    }];
 }
 
 -(void)performBlockAndWait:(void (^)(void))block {
-    if (_context.concurrencyType == NSConfinementConcurrencyType) {
+    [_context performBlockAndWait:^{
         block();
-    }else {
-        [_context performBlockAndWait:^{
-            block();
-        }];
-    }
+    }];
 }
 
 @end

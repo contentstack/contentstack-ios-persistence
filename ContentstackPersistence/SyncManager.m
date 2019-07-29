@@ -326,25 +326,65 @@
 }
 
 -(id)resolveClass:(Class)class byRelationshipMapping:(NSDictionary*) relationshipbyname withKey:(NSString*)key withobject:(id)object{
+    Class referenceClass = class;
     if ([self.persistanceDelegate isToManyRelationfor:relationshipbyname forKey:key]) {
         NSMutableSet *set = [NSMutableSet set];
         if ([object isKindOfClass:[NSArray class]]) {
             NSArray *referenceArray = object;
-            for (id reference in referenceArray) {
-                [set addObject:[self parseObject:reference forClass:class]];
+            for (id referenceVal in referenceArray) {
+                referenceClass = class;
+                id reference = referenceVal;
+                if ([referenceVal isKindOfClass:[NSDictionary class]] && [referenceVal valueForKey:@"uid"] && [referenceVal valueForKey:@"_content_type_uid"]) {
+                    reference = [referenceVal valueForKey:@"uid"];
+                    NSString *contenttype = [referenceVal valueForKey:@"_content_type_uid"];
+                    NSArray* entryClassArray = [self.entry filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contentTypeid = %@",contenttype]];
+                    if (entryClassArray.count > 0) {
+                        referenceClass = entryClassArray.firstObject;
+                    }
+                }
+                [set addObject:[self parseObject:reference forClass:referenceClass]];
             }
         }else if (![object isKindOfClass:[NSNull class]] && object != nil){
-            [set addObject:[self parseObject:object forClass:class]];
+            id reference = object;
+            if ([object isKindOfClass:[NSDictionary class]] && [object valueForKey:@"uid"] && [object valueForKey:@"_content_type_uid"]) {
+                reference = [object valueForKey:@"uid"];
+                NSString *contenttype = [object valueForKey:@"_content_type_uid"];
+                NSArray* entryClassArray = [self.entry filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contentTypeid = %@",contenttype]];
+                if (entryClassArray.count > 0) {
+                    referenceClass = entryClassArray.firstObject;
+                }
+            }
+            [set addObject:[self parseObject:reference forClass:referenceClass]];
         }
         return set;
     }else {
         if ([object isKindOfClass:[NSArray class]]) {
             NSArray *referenceArray = object;
             if ([referenceArray count] > 0) {
-                return [self parseObject:referenceArray.firstObject forClass:class];
+                id reference = referenceArray.firstObject;
+                if ([reference isKindOfClass:[NSDictionary class]] && [reference valueForKey:@"uid"] && [reference valueForKey:@"_content_type_uid"]) {
+                    NSDictionary *refDict = reference;
+                    reference = [refDict valueForKey:@"uid"];
+                    NSString *contenttype = [refDict valueForKey:@"_content_type_uid"];
+                    NSArray* entryClassArray = [self.entry filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contentTypeid = %@",contenttype]];
+                    if (entryClassArray.count > 0) {
+                        referenceClass = entryClassArray.firstObject;
+                    }
+                }
+                return [self parseObject:reference forClass:referenceClass];
             }
         }else {
-            return [self parseObject:object forClass:class];
+            id reference = object;
+            if ([reference isKindOfClass:[NSDictionary class]] && [reference valueForKey:@"uid"] && [reference valueForKey:@"_content_type_uid"]) {
+                NSDictionary *refDict = reference;
+                reference = [refDict valueForKey:@"uid"];
+                NSString *contenttype = [refDict valueForKey:@"_content_type_uid"];
+                NSArray* entryClassArray = [self.entry filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contentTypeid = %@",contenttype]];
+                if (entryClassArray.count > 0) {
+                    referenceClass = entryClassArray.firstObject;
+                }
+            }
+            return [self parseObject:reference forClass:referenceClass];
         }
     }
     return nil;
