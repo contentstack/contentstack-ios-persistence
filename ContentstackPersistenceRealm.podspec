@@ -19,7 +19,7 @@ s.author           = { 'Contentstack' => 'support@contentstack.io' }
 s.source           = { :git => 'https://github.com/contentstack/contentstack-ios-persistence.git', :tag => 'v0.0.5' }
 s.social_media_url = 'https://twitter.com/Contentstack'
 
-s.ios.deployment_target = '8.0'
+s.ios.deployment_target = '12.0'
 s.dependency 'Contentstack', '~> 3.6'
 s.dependency 'ContentstackPersistence', '~> 0.0.4'
 s.dependency 'Realm', '~> 4.0'

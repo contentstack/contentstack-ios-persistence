@@ -8,8 +8,10 @@
 
 #import "SyncManager.h"
 #import "SyncProtocol.h"
+#import "PersistenceModel.h"
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>
+
 @implementation SyncManageSwiftSupport
 + (BOOL)isSwiftClassName:(NSString *)className {
     return [className rangeOfString:@"."].location != NSNotFound;
@@ -19,7 +21,6 @@
     return [className substringFromIndex:[className rangeOfString:@"."].location + 1];
 }
 @end
-
 
 @interface SyncManager ()
 @property (nonatomic, retain) Stack * stack;
@@ -50,6 +51,19 @@
         }else {
             @throw [NSException exceptionWithName:@"SyncStoreProtocol should be define." reason:nil userInfo:nil];
         }
+    }
+    return self;
+}
+
+-(instancetype)initWithStack:(Stack *)stack persistance:(id<PersistanceDelegate>)delegate PersistenceModels: (PersistenceModel*) PersistenceModel
+{
+    self = [super init];
+    if (self) {
+        _stack = stack;
+        _persistanceDelegate = delegate;
+        _entry = PersistenceModel.entries;
+        _asset = PersistenceModel.asset;
+        _syncStack = PersistenceModel.syncStack;
     }
     return self;
 }
