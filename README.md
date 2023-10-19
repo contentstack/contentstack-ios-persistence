@@ -39,7 +39,7 @@ You can also import as a Module:
     ```
 
 #### Initialize the library
-
+##### Initialize with Stack details and CoreDataStore
 To start using the library in your application, you will need to initialize it by providing your stack details:
 - Objective-C
     ```sh
@@ -59,6 +59,32 @@ To start using the library in your application, you will need to initialize it b
   let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
   var coreDataStore = CoreDataStore(contenxt: <NSManageObjectContext>)
   var syncManager : SyncManager = SyncManager(stack: stack, persistance: coreDataStore)
+  syncManager.sync({ (percentage, isSynccompleted, error) in
+
+  })
+  ```
+##### Initialize with Stack details, CoreDataStore and PersistenceModel
+
+- Objective-C
+    ```sh
+    Config *config = [[Config alloc] init];
+    config.host = @"customcontentstack.io";
+    Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
+    CoreDataStore *coreDataStore = [[CoreDataStore alloc] initWithContenxt: <NSManageObjectContext>];
+    PersistenceModel * persistenceModel = [[PersistenceModel alloc] initWithSyncStack: SyncStore asset: AssetStore entries: [Session, Product]]
+    SyncManager *syncManager = [[SyncManager alloc] initWithStack: stack persistance: coreDataStore persistenceModel: persistenceModel]
+    [syncManager sync:{ (percentageComplete, isSyncCompleted, error) in
+
+    }];
+
+- Swift
+  ```
+  let config = Config()
+  config.host = @"customcontentstack.io";
+  let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
+  var coreDataStore = CoreDataStore(contenxt: <NSManageObjectContext>)
+  var persistenceModel = PersistenceModel(syncStack: SyncStore.self, asset: Assets.self, entries: [Product.self])
+  var syncManager : SyncManager = SyncManager(stack: stack, persistance: coreDataStore, persistenceModel: persistenceModel)
   syncManager.sync({ (percentage, isSynccompleted, error) in
 
   })
