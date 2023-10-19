@@ -11,6 +11,7 @@
 #import <Contentstack/Contentstack.h>
 #import "SyncProtocol.h"
 #import "SyncPersistable.h"
+#import "PersistenceModel.h"
 
 @interface SyncManageSwiftSupport  : NSObject
 
@@ -53,7 +54,26 @@
  */
 -(instancetype _Nonnull )initWithStack:(Stack*_Nonnull)stack persistance:(id<PersistanceDelegate> _Nonnull)delegate;
 
+/**
+ Create SyncManager instance from Stack and PersistanceDelegate
+     //Obj-C
+     Config *config = [[Config alloc] init];
+     config.host = @"customcontentstack.io";
+     Stack *stack = [Contentstack stackWithAPIKey:<APIKey> accessToken:<AccessToken> environmentName:<EnvironmentName> config:config];
+        
+     //Swift
+     let config = Config()
+     config.host = @"customcontentstack.io";
+     let stack : Stack = Contentstack.stack(withAPIKey: <APIKey>, accessToken: <AccessToken>, environmentName: <EnvironmentName>, config:config)
+     let PersistenceModel = PersistenceModel(syncStack: SyncStore.self, asset: Assets.self, entries: [Product.self])
+     let syncManager : SyncManager = SyncManager(stack: stack, persistance: persistenceObject, PersistenceModel: PersistenceModel)
 
+
+ @param stack instance of Stack
+ @param delegate instance of PersistanceDelegate
+ @return instance of SyncManager
+ */
+-(instancetype _Nonnull)initWithStack:(Stack *_Nonnull)stack persistance:(id<PersistanceDelegate>_Nonnull)delegate PersistenceModels: (PersistenceModel*_Nonnull) PersistenceModel;
 /**
  Initiate Synchronization from SyncManager provide percentage of sync and provide true once completed with synchronization
      //Obj-C
