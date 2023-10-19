@@ -426,8 +426,7 @@ NSArray *classConformsProtocol(Protocol* protocol, Class superClass) {
     for (int idx = 0; idx < numberOfClasses; idx++)
     {
         Class class = classList[idx];
-        
-        if ([superClass isEqual:class_getSuperclass(class)] && class_getClassMethod(class, @selector(conformsToProtocol:)) && [class conformsToProtocol:protocol])
+        if (class_getClassMethod(class, @selector(superclass)) && [superClass isEqual: [class superclass]] && class_getClassMethod(class, @selector(conformsToProtocol:)) && [class conformsToProtocol:protocol])
         {
             [classesArray addObject:class];
         }
