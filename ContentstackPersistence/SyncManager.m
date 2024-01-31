@@ -434,18 +434,22 @@
 
 NSArray *classConformsProtocol(Protocol* protocol, Class superClass) {
     NSMutableArray *classesArray = [NSMutableArray array];
-    int numberOfClasses = objc_getClassList(NULL, 0);
-    Class *classList = (Class *)malloc(numberOfClasses * sizeof(Class));
-    numberOfClasses = objc_getClassList(classList, numberOfClasses);
     
-    for (int idx = 0; idx < numberOfClasses; idx++)
-    {
-        Class class = classList[idx];
-        if (class_getClassMethod(class, @selector(superclass)) && [superClass isEqual: [class superclass]] && class_getClassMethod(class, @selector(conformsToProtocol:)) && [class conformsToProtocol:protocol])
-        {
-            [classesArray addObject:class];
+    // Get the class list
+    unsigned int numberOfClasses;
+    Class *classList = objc_copyClassList(&numberOfClasses);
+    
+    for (unsigned int idx = 0; idx < numberOfClasses; idx++) {
+        Class currentClass = classList[idx];
+        // Check if it's a valid Obj-c class
+        if (class_respondsToSelector(currentClass, @selector(conformsToProtocol:)) && class_respondsToSelector(currentClass, @selector(superclass))) {
+            // Check superclass and protocol conformity
+            if ([superClass isEqual:[currentClass superclass]] && [currentClass conformsToProtocol:protocol]) {
+                [classesArray addObject:currentClass];
+            }
         }
     }
+    
     free(classList);
     return classesArray;
 }
