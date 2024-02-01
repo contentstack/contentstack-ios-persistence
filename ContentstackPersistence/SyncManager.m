@@ -98,14 +98,22 @@
     syncStore.paginationToken = syncStack.paginationToken;
 }
 
--(void)sync:(void (^)(double, BOOL, NSError * _Nullable))completion {
-    
-    NSString *paginationToken = [self getPaginationToken];
-    NSString *syncToken = [self getSyncToken];
-    
+-(void)syncWithInit:(BOOL) shouldInit onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
+    NSString *paginationToken = [self getPaginationToken];//csb0e8704474a9624785098d233edd2715`
+    NSString *syncToken = [self getSyncToken];//cse053899d15e9e94cd3751df26f719c87
+    __weak typeof (self) weakSelf = self;
     id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
         if (error != nil) {
-            //Error Message
+            //Init the sync API on pagination and sync token errors
+            if (error.code == 422) {
+                if (error.userInfo && error.userInfo[@"errors"]) {
+                    NSDictionary *errors = error.userInfo[@"errors"];
+                    if (errors[@"pagination_token"] || errors[@"sync_token"]) {
+                        [weakSelf syncWithInit:true onCompletion:completion];
+                        return;
+                    }
+                }
+            }
             completion(self.percentageComplete, false, error);
         } else {
             __block BOOL isSyncCompleted = false;
@@ -147,7 +155,10 @@
         }
         
     };
-    if (paginationToken != nil) {
+    if (shouldInit) {
+        self.percentageComplete = 0;
+        [_stack sync:completionBlock];
+    }else if (paginationToken != nil) {
         [_stack syncPaginationToken:paginationToken completion:completionBlock];
     }else if (syncToken != nil) {
         [_stack syncToken:syncToken completion:completionBlock];
@@ -155,6 +166,10 @@
         self.percentageComplete = 0;
         [_stack sync:completionBlock];
     }
+}
+
+-(void)sync:(void (^)(double, BOOL, NSError * _Nullable))completion {
+    [self syncWithInit:false onCompletion:completion];
 }
 
 -(void)createAssets:(NSArray*)assetsArray {
