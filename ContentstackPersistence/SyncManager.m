@@ -92,15 +92,25 @@
     return syncToken;
 }
 
+-(NSString*) getSeqId {
+    __block NSString *seqId;
+    [self.persistanceDelegate performBlockAndWait:^{
+        id<SyncStoreProtocol> syncStack  = [self findOrCreate:self->_syncStack predicate:nil];
+        seqId = syncStack.seqId;
+    }];
+    return seqId;
+}
+
 -(void)updateSyncStack:(SyncStack*)syncStack {
     id<SyncStoreProtocol> syncStore = (id<SyncStoreProtocol>)[self findOrCreate:_syncStack predicate:nil];
     syncStore.syncToken = syncStack.syncToken;
     syncStore.paginationToken = syncStack.paginationToken;
+    syncStore.seqId = syncStack.seqId;
 }
 
 -(void)syncWithInit:(BOOL) shouldInit onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
-    NSString *paginationToken = [self getPaginationToken];//csb0e8704474a9624785098d233edd2715`
-    NSString *syncToken = [self getSyncToken];//cse053899d15e9e94cd3751df26f719c87
+    NSString *seqId = [self getSeqId];
+    NSString *syncToken = [self getSyncToken];
     __weak typeof (self) weakSelf = self;
     id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
         if (error != nil) {
@@ -108,7 +118,7 @@
             if (error.code == 422) {
                 if (error.userInfo && error.userInfo[@"errors"]) {
                     NSDictionary *errors = error.userInfo[@"errors"];
-                    if (errors[@"pagination_token"] || errors[@"sync_token"]) {
+                    if (errors[@"pagination_token"] || errors[@"sync_token"] || errors[@"seq_id"]) {
                         [weakSelf syncWithInit:true onCompletion:completion];
                         return;
                     }
@@ -158,11 +168,13 @@
     if (shouldInit) {
         self.percentageComplete = 0;
         [_stack sync:completionBlock];
-    }else if (paginationToken != nil) {
+    } else if (seqId != nil) {
+        [_stack syncSeqId:seqId completion:completionBlock];
+    } else if (paginationToken != nil) {
         [_stack syncPaginationToken:paginationToken completion:completionBlock];
-    }else if (syncToken != nil) {
+    } else if (syncToken != nil) {
         [_stack syncToken:syncToken completion:completionBlock];
-    }else {
+    } else {
         self.percentageComplete = 0;
         [_stack sync:completionBlock];
     }
