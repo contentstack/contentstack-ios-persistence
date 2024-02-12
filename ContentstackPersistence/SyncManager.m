@@ -111,6 +111,7 @@
 -(void)syncWithInit:(BOOL) shouldInit onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
     NSString *seqId = [self getSeqId];
     NSString *syncToken = [self getSyncToken];
+    NSString *paginationToken = [self getPaginationToken];
     __weak typeof (self) weakSelf = self;
     id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
         if (error != nil) {
@@ -151,8 +152,7 @@
                 NSArray *publishEntryArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'entry_published'"]];
                 [self createEntries:publishEntryArray];
                 
-                //Sync toke Update
-                if (syncStack.syncToken != nil) {
+                if (syncStack.items.count == 0) {
                     isSyncCompleted = true;
                     [self updateSyncStack:syncStack];
                 }
