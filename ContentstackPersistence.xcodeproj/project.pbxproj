@@ -10,6 +10,7 @@
 		0F449A752AE0EAD400693DE1 /* PersistenceModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F449A732AE0EAD400693DE1 /* PersistenceModel.h */; };
 		0F449A762AE0EAD400693DE1 /* PersistenceModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F449A742AE0EAD400693DE1 /* PersistenceModel.m */; };
 		44D20D49439592B697575ADF /* libPods-ContentstackPersistenceTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0181A1F1F3118F9E9E07F420 /* libPods-ContentstackPersistenceTests.a */; };
+		477F8B052B7B9EB600455CB3 /* BSONOIDGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 477F8B042B7B9EB600455CB3 /* BSONOIDGenerator.m */; };
 		4E38FC5F2DF0928B8F15875A /* libPods-ContentstackPersistence.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 554203F0D46030984D06105D /* libPods-ContentstackPersistence.a */; };
 		FA629A6A2186C80E00440BA5 /* ContentstackPersistence.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA629A602186C80E00440BA5 /* ContentstackPersistence.framework */; };
 		FA629A6F2186C80F00440BA5 /* ContentstackPersistenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA629A6E2186C80F00440BA5 /* ContentstackPersistenceTests.m */; };
@@ -45,6 +46,8 @@
 		0FA9B00A22651307003AAE25 /* ContentstackPersistenceRealm.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ContentstackPersistenceRealm.podspec; sourceTree = SOURCE_ROOT; };
 		18AA084F9E0C06DDAB20E086 /* Pods-ContentstackPersistenceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistenceTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistenceTests/Pods-ContentstackPersistenceTests.release.xcconfig"; sourceTree = "<group>"; };
 		2C54B17E607841EF4F9652D3 /* Pods-ContentstackPersistence.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistence.release.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistence/Pods-ContentstackPersistence.release.xcconfig"; sourceTree = "<group>"; };
+		477F8B032B7B9E2C00455CB3 /* BSONOIDGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSONOIDGenerator.h; sourceTree = "<group>"; };
+		477F8B042B7B9EB600455CB3 /* BSONOIDGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSONOIDGenerator.m; sourceTree = "<group>"; };
 		554203F0D46030984D06105D /* libPods-ContentstackPersistence.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ContentstackPersistence.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA6A5F28D3C66575D458C1FA /* Pods-ContentstackPersistenceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContentstackPersistenceTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ContentstackPersistenceTests/Pods-ContentstackPersistenceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FA629A602186C80E00440BA5 /* ContentstackPersistence.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ContentstackPersistence.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +147,8 @@
 				FA629A7D2186C88600440BA5 /* SyncProtocol.h */,
 				FA629A632186C80E00440BA5 /* ContentstackPersistence.h */,
 				FA629A642186C80E00440BA5 /* Info.plist */,
+				477F8B032B7B9E2C00455CB3 /* BSONOIDGenerator.h */,
+				477F8B042B7B9EB600455CB3 /* BSONOIDGenerator.m */,
 			);
 			path = ContentstackPersistence;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				FA629A832186C88600440BA5 /* SyncManager.m in Sources */,
 				FA629A8A2186C8BC00440BA5 /* RealmStore.m in Sources */,
 				0F449A762AE0EAD400693DE1 /* PersistenceModel.m in Sources */,
+				477F8B052B7B9EB600455CB3 /* BSONOIDGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
