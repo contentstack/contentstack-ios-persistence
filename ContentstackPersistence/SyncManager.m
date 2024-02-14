@@ -112,7 +112,6 @@
 }
 
 /* The following method will be deprecated soon */
-//__attribute__((deprecated("Use syncWithSeqId: instead")))
 -(void)syncWithInit:(BOOL) shouldInit syncToken:(NSString *)syncToken onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
     __weak typeof (self) weakSelf = self;
     NSString *paginationToken = [self getPaginationToken];
