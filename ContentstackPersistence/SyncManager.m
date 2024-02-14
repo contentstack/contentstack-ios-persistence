@@ -100,7 +100,6 @@
         id<SyncStoreProtocol> syncStack  = [self findOrCreate:self->_syncStack predicate:nil];
         seqId = syncStack.seqId;
     }];
-//    return [seqId stringByAppendingString: @"abc"];
     return seqId;
 }
 
@@ -246,7 +245,7 @@
         [_stack syncSeqId:seqId syncToken:syncToken completion:completionBlock];
     } else {
         self.percentageComplete = 0;
-        [_stack syncSeqIdInit:completionBlock];
+        [_stack initSeqSync:completionBlock];
     }
 }
 
