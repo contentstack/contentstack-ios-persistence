@@ -36,6 +36,7 @@
 @required
 @property (nonatomic)NSString* paginationToken;
 @property (nonatomic)NSString* syncToken;
+@property (nonatomic)NSString* seqId;
 @end
 
 /**

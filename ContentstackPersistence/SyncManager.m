@@ -11,6 +11,8 @@
 #import "PersistenceModel.h"
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>
+#import "CSIOInternalHeaders.h"
+#import "BSONOIDGenerator.h"
 
 @implementation SyncManageSwiftSupport
 + (BOOL)isSwiftClassName:(NSString *)className {
@@ -92,16 +94,27 @@
     return syncToken;
 }
 
+-(NSString*) getSeqId {
+    __block NSString *seqId;
+    [self.persistanceDelegate performBlockAndWait:^{
+        id<SyncStoreProtocol> syncStack  = [self findOrCreate:self->_syncStack predicate:nil];
+        seqId = syncStack.seqId;
+    }];
+    return seqId;
+}
+
 -(void)updateSyncStack:(SyncStack*)syncStack {
     id<SyncStoreProtocol> syncStore = (id<SyncStoreProtocol>)[self findOrCreate:_syncStack predicate:nil];
     syncStore.syncToken = syncStack.syncToken;
     syncStore.paginationToken = syncStack.paginationToken;
+    syncStore.seqId = syncStack.seqId;
 }
 
--(void)syncWithInit:(BOOL) shouldInit onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
-    NSString *paginationToken = [self getPaginationToken];//csb0e8704474a9624785098d233edd2715`
-    NSString *syncToken = [self getSyncToken];//cse053899d15e9e94cd3751df26f719c87
+/* The following method will be deprecated soon */
+-(void)syncWithInit:(BOOL) shouldInit syncToken:(NSString *)syncToken onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
     __weak typeof (self) weakSelf = self;
+    NSString *paginationToken = [self getPaginationToken];
+
     id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
         if (error != nil) {
             //Init the sync API on pagination and sync token errors
@@ -109,7 +122,7 @@
                 if (error.userInfo && error.userInfo[@"errors"]) {
                     NSDictionary *errors = error.userInfo[@"errors"];
                     if (errors[@"pagination_token"] || errors[@"sync_token"]) {
-                        [weakSelf syncWithInit:true onCompletion:completion];
+                        [weakSelf syncWithInit:true syncToken:nil onCompletion:completion];
                         return;
                     }
                 }
@@ -153,7 +166,6 @@
             }];
             completion(self.percentageComplete, isSyncCompleted, error);
         }
-        
     };
     if (shouldInit) {
         self.percentageComplete = 0;
@@ -168,8 +180,117 @@
     }
 }
 
+-(void)syncWithSeqId:(NSString *)seqId syncToken:(NSString *)syncToken onCompletion:(void (^)(double, BOOL, NSError * _Nullable))completion {
+    __weak typeof (self) weakSelf = self;
+    id completionBlock = ^(SyncStack * _Nullable syncStack, NSError * _Nullable error) {
+        if (error != nil) {
+            //Init the sync API on pagination and sync token errors
+            if (error.code == 422) {
+                if (error.userInfo && error.userInfo[@"errors"]) {
+                    NSDictionary *errors = error.userInfo[@"errors"];
+                    if (errors[@"seq_id"]) {
+                        [weakSelf syncWithSeqId:nil syncToken:nil onCompletion:completion];
+                        return;
+                    }
+                }
+            }
+            completion(self.percentageComplete, false, error);
+        } else {
+            __block BOOL isSyncCompleted = false;
+            [self.persistanceDelegate performBlockAndWait:^{
+                
+                if (syncStack.items) {
+                    self.percentageComplete = ((double)(syncStack.skip) + (double)syncStack.items.count) / (double)syncStack.totalCount;
+                    
+                    if (syncToken && syncStack.seqId == nil && syncStack.items.count > 0) {
+                        // Generate seq id.
+                        [self generateAndPersistSeqId:syncStack];
+                    }
+                }
+                
+                //entry_unpublished || entry_deleted
+                NSArray *deletedEntryArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'entry_unpublished' || type = 'entry_deleted' "]];
+                [self deleteEntries:deletedEntryArray];
+                
+                //asset_unpublished || asset_deleted
+                if (self->_asset != nil) {
+                    NSArray *deletedAssetsArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'asset_unpublished' || type = 'asset_deleted'"]];
+                    [self.persistanceDelegate delete:self->_asset inUid:[deletedAssetsArray valueForKeyPath:@"data.uid"]];
+                }
+                
+                //asset_published
+                NSArray *publishAssetArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'asset_published'"]];
+                [self createAssets:publishAssetArray];
+                
+                //entry_published
+                NSArray *publishEntryArray = [syncStack.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = 'entry_published'"]];
+                [self createEntries:publishEntryArray];
+                
+                //Sync toke Update
+                if (syncStack.seqId != nil) {
+                    isSyncCompleted = true;
+                    [self updateSyncStack:syncStack];
+                }
+                //Save context
+                if ([self.persistanceDelegate respondsToSelector:@selector(save)]) {
+                    [self.persistanceDelegate save];
+                }
+            }];
+            completion(self.percentageComplete, isSyncCompleted, error);
+        }
+    };
+    if (seqId != nil) {
+        [_stack syncSeqId:seqId syncToken:syncToken completion:completionBlock];
+    } else if (syncToken != nil) {
+        [_stack syncSeqId:seqId syncToken:syncToken completion:completionBlock];
+    } else {
+        self.percentageComplete = 0;
+        [_stack initSeqSync:completionBlock];
+    }
+}
+
+-(void)generateAndPersistSeqId:(SyncStack * _Nullable)syncStack {
+    // Get the last object's event_at
+    NSDictionary *lastObject = nil;
+    for (NSInteger i = syncStack.items.count - 1; i >= 0; i--) {
+        id object = syncStack.items[i];
+        if ([object isKindOfClass:[NSDictionary class]]) {
+            lastObject = object;
+            break;
+        }
+    }
+    syncStack.seqId = [self generateSeqId:[lastObject objectForKey:@"event_at"]];
+    syncStack.syncToken = nil;
+    
+}
+
+-(NSString *)generateSeqId:(NSString *)eventAt {
+    // Create a date formatter to parse the date string
+    NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+    dateFormater.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    NSDate *date = [dateFormater dateFromString:eventAt];
+    if (date) {
+        // Convert the NSDate object to an NSTimeInterval
+        NSTimeInterval timeInterval = [date timeIntervalSince1970];
+        NSInteger timeIntervalInSeconds = (NSInteger)timeInterval;
+        return [BSONOIDGenerator generate:timeIntervalInSeconds];
+    } else {
+        // Handle case where date conversion failed.
+        [NSException raise:@"Unable to parse date string" format:@"Invalid date format %@", eventAt];
+        return nil;
+    }
+}
+
 -(void)sync:(void (^)(double, BOOL, NSError * _Nullable))completion {
-    [self syncWithInit:false onCompletion:completion];
+    NSString *syncToken = [self getSyncToken];
+    NSString *seqId = [self getSeqId];
+    if (syncToken) {
+        [self syncWithSeqId:nil syncToken:syncToken onCompletion:completion];
+    } else if (seqId) {
+        [self syncWithSeqId:seqId syncToken:nil onCompletion:completion];
+    } else {
+        [self syncWithSeqId:nil syncToken:nil onCompletion:completion];
+    }
 }
 
 -(void)createAssets:(NSArray*)assetsArray {
