@@ -1,4 +1,7 @@
 fileignoreconfig:
+- filename: .github/workflows/secrets-scan.yml
+  ignore_detectors:
+    - filecontent
 - filename: Podfile.lock
   checksum: 35517d517bfe1c3995e61d5b8d97d1d313a1dc0d7ed544117c29adaaf8beaeac
 
