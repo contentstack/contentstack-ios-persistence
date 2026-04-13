@@ -1,5 +1,16 @@
 [![Contentstack](https://www.contentstack.com/docs/static/images/contentstack.png)](https://www.contentstack.com/)
 
+## Important
+
+The **CocoaPods** persistence modules in this repository (`ContentstackPersistence`, `ContentstackPersistenceCoreData`, `ContentstackPersistenceRealm`) are **add-ons** on the **legacy Objective-C Content Delivery SDK + CocoaPods** path. That path is **deprecated for new work**.
+
+- **New apps** should use the **[Contentstack Swift SDK](https://github.com/contentstack/contentstack-swift)** with **Swift Package Manager** ([Swift Package Index](https://swiftpackageindex.com/contentstack/contentstack-swift)) and implement persistence yourself (or follow published guidance). The Swift CDA reference is **[here](https://www.contentstack.com/docs/developers/sdks/content-delivery-sdk/swift/reference)**.
+- **Existing** CocoaPods-based apps may **continue shipping**; migrate when you are ready.
+
+For full details, see **[DEPRECATION.md](DEPRECATION.md)**.
+
+---
+
 # Contentstack iOS Persistence Library
 
 Contentstack provides [iOS Persistence Library](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk) that lets your application store data on the device's local storage. This helps you build apps that can work offline too. Given below is a detailed guide and helpful resources to get started with our iOS Persistence Library.
@@ -145,6 +156,7 @@ We have created an example app using iOS Persistence Library that stores data on
 
 ### Helpful Links
 
+- [Repository overview](Docs/overview.md)
 - [iOS Persistence Library Docs](https://www.contentstack.com/docs/guide/synchronization/using-realm-persistence-library-with-ios-sync-sdk)
 - [iOS Persistence Example App](https://github.com/contentstack/contentstack-ios-persistence-example)
 - [Content Delivery API Docs](https://contentstack.com/docs/apis/content-delivery-api/)
