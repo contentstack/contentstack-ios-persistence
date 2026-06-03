@@ -20,7 +20,7 @@ s.source           = { :git => 'https://github.com/contentstack/contentstack-ios
 s.social_media_url = 'https://twitter.com/Contentstack'
 
 s.ios.deployment_target = '12.0'
-s.dependency 'Contentstack', '~> 3.6'
+s.dependency 'Contentstack', '~> 3.16'
 s.dependency 'ContentstackPersistence', '~> 0.1.1'
 s.dependency 'Realm', '~> 4.0'
 s.pod_target_xcconfig = { 'OTHER_LDFLAGS' => '-lObjC' }
