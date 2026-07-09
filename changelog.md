@@ -1,5 +1,12 @@
 ## Changelog
 
+### Version 0.1.2 (2026-07-13) ###
+
+#### Fixed
+
+ - Snyk fix: Corrected the podspec license metadata from `Commercial` to `MIT` (referencing the repository `LICENSE` file) to resolve the Snyk "Unknown license" finding.
+
+
 ### Documentation
 
 #### Date: Apr-02-2026
