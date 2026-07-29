@@ -1,10 +1,18 @@
 ## Changelog
 
+
 ### Documentation
 
 #### Date: Apr-02-2026
 
 - Published CocoaPods deprecation guidance for this repository: added an **Important** section at the top of **README.md**, a customer-facing **DEPRECATION.md** at the repository root, and **Docs/overview.md** (banner aligned with the README, linking to `DEPRECATION.md`).
+
+### Version 0.1.2 (2026-07-27) ###
+
+#### Fixed
+
+ - Snyk fix: Corrected the podspec license metadata from `Commercial` to `MIT` (referencing the repository `LICENSE` file) to resolve the Snyk "Unknown license" finding.
+
 
 ### Version 0.0.3 (2019-04-16) ###
 

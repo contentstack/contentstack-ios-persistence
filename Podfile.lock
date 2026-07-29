@@ -1,5 +1,5 @@
 PODS:
-  - Contentstack (3.16.0)
+  - Contentstack (3.16.1)
   - Realm (10.43.1):
     - Realm/Headers (= 10.43.1)
   - Realm/Headers (10.43.1)
@@ -14,7 +14,7 @@ SPEC REPOS:
     - Realm
 
 SPEC CHECKSUMS:
-  Contentstack: 0c0b524d69c50a4df3197b1cd696ffa44d01acd2
+  Contentstack: d8012cd477f0dd05e55d965eeb5469518b11abf7
   Realm: d97b438de77459e443bd2c8ad5ca0f95107aee4b
 
 PODFILE CHECKSUM: 1f06bd77d994e6965510fdf5f30229e07b6e36c3
